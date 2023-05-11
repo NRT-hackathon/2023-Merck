@@ -1,0 +1,48 @@
+title                   =  NVT Equilibration  
+define                  = -DPOSRES  ; position restrain the molecule
+; Run parameters
+integrator              = md         	; leap-frog integrator
+nsteps                  = 100000     	; 0.0002 * nsteps = # ps
+dt                      = 0.0002     	; time step in picoseconds
+; OUTPUT CONTROL
+nstxout                 = 50000       	 ; save coordinates every 1.0 ps
+nstvout                 = 50000       	 ; save velocities every 1.0 ps
+nstenergy               = 50000       	 ; save energies every 1.0 ps
+nstlog                  = 20000        	 ; update log file every 1.0 ps
+
+; PARAMETERS FOR BONDED INTERACTIONS 
+continuation            = no        	 ; no prior dynamics run
+constraint_algorithm    = lincs     	 ; holonomic constraints 
+constraints             = all-bonds      ; all bonds are constrained in this step
+lincs_iter              = 1         	 ; accuracy of LINCS
+lincs_order             = 4         	 ; also related to accuracy
+
+; PARAMETERS FOR NONBONDED INTERACTIONS 
+cutoff-scheme           = Verlet    	; Buffered neighbor searching
+ns_type                 = grid      	; search neighboring grid cells
+nstlist                 = 10        	; 20 fs, largely irrelevant with Verlet
+rcoulomb                = 1.0       	; short-range electrostatic cutoff (in nm)
+rvdw                    = 1.0       	; short-range van der Waals cutoff (in nm)
+DispCorr                = EnerPres  	; account for cut-off vdW scheme
+
+; ELECTROSTATICS
+coulombtype             = PME       	; Particle Mesh Ewald for long-range electrostatics
+pme_order               = 4         	; cubic interpolation
+fourierspacing          = 0.16      	; grid spacing for FFT
+
+; TEMPERATURE COUPLING PARAMETERS
+tcoupl                  = V-rescale     ; modified Berendsen thermostat
+tc-grps                 = System        ; entire system coupled as one group
+tau_t                   = 0.1           ; time constant, in ps
+ref_t                   = 300           ; reference temperature, one for each group, in K
+
+; PRESSURE COUPLING PARAMETERS (none for NVT)
+pcoupl                  = no        	; no pressure coupling in NVT
+
+; PERIODIC BOUNDARY CONDITIONS
+pbc                     = xyz       	; 3-D PBC
+
+; VELOCITY GENERATION
+gen_vel                 = yes       	; assign velocities from Maxwell distribution
+gen_temp                = 300       	; temperature for Maxwell distribution
+gen_seed                = -1        	; generate a random seed
